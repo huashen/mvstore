@@ -1,6 +1,6 @@
-package com.lhs.mvstore.mvstore.fs;
+package com.lhs.mvstore.fs;
 
-import com.lhs.mvstore.util.MathUtils;
+import com.lhs.util.MathUtils;
 
 import java.io.IOException;
 import java.io.InputStream;

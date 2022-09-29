@@ -1,7 +1,7 @@
-package com.lhs.mvstore.exception;
+package com.lhs.exception;
 
-import com.lhs.mvstore.common.ErrorCode;
-import com.lhs.mvstore.util.StringUtils;
+import com.lhs.common.ErrorCode;
+import com.lhs.util.StringUtils;
 
 import java.io.IOException;
 import java.io.PrintStream;

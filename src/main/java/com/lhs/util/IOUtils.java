@@ -1,7 +1,7 @@
-package com.lhs.mvstore.util;
+package com.lhs.util;
 
-import com.lhs.mvstore.common.Constants;
-import com.lhs.mvstore.common.SysProperties;
+import com.lhs.common.Constants;
+import com.lhs.common.SysProperties;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

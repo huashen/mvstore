@@ -1,4 +1,4 @@
-package com.lhs.mvstore.mvstore;
+package com.lhs.mvstore;
 
 /**
  * Class RootReference is an immutable structure to represent state of the MVMap as a whole

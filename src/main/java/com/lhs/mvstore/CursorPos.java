@@ -1,4 +1,4 @@
-package com.lhs.mvstore.mvstore;
+package com.lhs.mvstore;
 
 /**
  * A position in a cursor.

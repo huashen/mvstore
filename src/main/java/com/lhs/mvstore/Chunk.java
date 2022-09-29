@@ -1,8 +1,8 @@
-package com.lhs.mvstore.mvstore;
+package com.lhs.mvstore;
 
-import com.lhs.mvstore.util.DataUtils;
-import com.lhs.mvstore.exception.MVStoreException;
-import com.lhs.mvstore.util.StringUtils;
+import com.lhs.util.DataUtils;
+import com.lhs.exception.MVStoreException;
+import com.lhs.util.StringUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;

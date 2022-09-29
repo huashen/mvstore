@@ -1,6 +1,6 @@
-package com.lhs.mvstore.mvstore;
+package com.lhs.mvstore;
 
-import com.lhs.mvstore.util.DataUtils;
+import com.lhs.util.DataUtils;
 
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;

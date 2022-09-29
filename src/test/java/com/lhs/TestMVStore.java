@@ -3,11 +3,11 @@
  * and the EPL 1.0 (https://h2database.com/html/license.html).
  * Initial Developer: H2 Group
  */
-package com.lhs.mvstore;
+package com.lhs;
 
-import com.lhs.mvstore.mvstore.MVMap;
-import com.lhs.mvstore.mvstore.MVStore;
-import com.lhs.mvstore.util.FileUtils;
+import com.lhs.mvstore.MVMap;
+import com.lhs.mvstore.MVStore;
+import com.lhs.util.FileUtils;
 import org.junit.Test;
 
 /**

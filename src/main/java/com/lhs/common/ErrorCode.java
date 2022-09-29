@@ -1,4 +1,4 @@
-package com.lhs.mvstore.common;
+package com.lhs.common;
 
 /**
  * This class defines the error codes used for SQL exceptions.

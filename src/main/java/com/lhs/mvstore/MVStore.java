@@ -1,9 +1,9 @@
-package com.lhs.mvstore.mvstore;
+package com.lhs.mvstore;
 
-import com.lhs.mvstore.util.DataUtils;
-import com.lhs.mvstore.util.Utils;
-import com.lhs.mvstore.exception.MVStoreException;
-import com.lhs.mvstore.util.MathUtils;
+import com.lhs.util.DataUtils;
+import com.lhs.util.Utils;
+import com.lhs.exception.MVStoreException;
+import com.lhs.util.MathUtils;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.nio.ByteBuffer;

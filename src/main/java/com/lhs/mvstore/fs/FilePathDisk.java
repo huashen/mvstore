@@ -1,14 +1,14 @@
-package com.lhs.mvstore.mvstore.fs;
+package com.lhs.mvstore.fs;
 
 /*
  * Copyright 2004-2021 H2 Group. Multiple-Licensed under the MPL 2.0,
  * and the EPL 1.0 (https://h2database.com/html/license.html).
  * Initial Developer: H2 Group
  */
-import com.lhs.mvstore.common.ErrorCode;
-import com.lhs.mvstore.exception.DbException;
-import com.lhs.mvstore.util.FileUtils;
-import com.lhs.mvstore.common.SysProperties;
+import com.lhs.common.ErrorCode;
+import com.lhs.exception.DbException;
+import com.lhs.util.FileUtils;
+import com.lhs.common.SysProperties;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,7 +1,7 @@
-package com.lhs.mvstore.mvstore;
+package com.lhs.mvstore;
 
-import com.lhs.mvstore.util.DataUtils;
-import com.lhs.mvstore.mvstore.fs.FilePath;
+import com.lhs.util.DataUtils;
+import com.lhs.mvstore.fs.FilePath;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;

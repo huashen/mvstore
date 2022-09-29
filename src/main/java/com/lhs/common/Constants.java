@@ -1,4 +1,4 @@
-package com.lhs.mvstore.common;
+package com.lhs.common;
 
 import java.sql.ResultSet;
 

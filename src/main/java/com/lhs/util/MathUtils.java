@@ -1,4 +1,4 @@
-package com.lhs.mvstore.util;
+package com.lhs.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

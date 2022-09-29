@@ -1,4 +1,4 @@
-package com.lhs.mvstore.mvstore;
+package com.lhs.mvstore;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

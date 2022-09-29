@@ -1,7 +1,7 @@
-package com.lhs.mvstore.mvstore;
+package com.lhs.mvstore;
 
-import com.lhs.mvstore.util.DataUtils;
-import com.lhs.mvstore.util.MathUtils;
+import com.lhs.util.DataUtils;
+import com.lhs.util.MathUtils;
 
 import java.util.BitSet;
 

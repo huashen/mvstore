@@ -1,7 +1,7 @@
-package com.lhs.mvstore.util;
+package com.lhs.util;
 
-import com.lhs.mvstore.common.Constants;
-import com.lhs.mvstore.exception.MVStoreException;
+import com.lhs.common.Constants;
+import com.lhs.exception.MVStoreException;
 
 import java.io.EOFException;
 import java.io.IOException;

@@ -1,7 +1,7 @@
-package com.lhs.mvstore.common;
+package com.lhs.common;
 
-import com.lhs.mvstore.util.MathUtils;
-import com.lhs.mvstore.util.Utils;
+import com.lhs.util.MathUtils;
+import com.lhs.util.Utils;
 
 /**
  * The constants defined in this class are initialized from system properties.

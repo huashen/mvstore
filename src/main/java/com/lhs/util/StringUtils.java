@@ -1,7 +1,7 @@
-package com.lhs.mvstore.util;
+package com.lhs.util;
 
-import com.lhs.mvstore.common.ErrorCode;
-import com.lhs.mvstore.exception.DbException;
+import com.lhs.common.ErrorCode;
+import com.lhs.exception.DbException;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.SoftReference;

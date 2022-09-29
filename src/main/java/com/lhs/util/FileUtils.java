@@ -1,6 +1,6 @@
-package com.lhs.mvstore.util;
+package com.lhs.util;
 
-import com.lhs.mvstore.mvstore.fs.FilePath;
+import com.lhs.mvstore.fs.FilePath;
 
 import java.io.EOFException;
 import java.io.File;

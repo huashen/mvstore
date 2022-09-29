@@ -1,4 +1,4 @@
-package com.lhs.mvstore.exception;
+package com.lhs.exception;
 
 /**
  * Various kinds of MVStore problems, along with associated error code.

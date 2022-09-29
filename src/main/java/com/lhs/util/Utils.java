@@ -1,4 +1,4 @@
-package com.lhs.mvstore.util;
+package com.lhs.util;
 
 /*
  * Copyright 2004-2021 H2 Group. Multiple-Licensed under the MPL 2.0,
