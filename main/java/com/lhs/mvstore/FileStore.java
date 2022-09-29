@@ -196,6 +196,7 @@ public class FileStore {
      */
     public void writeFully(long pos, ByteBuffer src) {
         int len = src.remaining();
+        //缓存fileSize，不用每次调file.size
         fileSize = Math.max(fileSize, pos + len);
         DataUtils.writeFully(file, pos, src);
         writeCount.incrementAndGet();

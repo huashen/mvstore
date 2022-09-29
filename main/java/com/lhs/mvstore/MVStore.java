@@ -318,12 +318,14 @@ public class MVStore implements AutoCloseable {
                         this.fileStore.open(fileName, readOnly);
                     }
                     if (this.fileStore.size() == 0) {
+                        //初始化storeHeader
                         creationTime = getTimeAbsolute();
                         storeHeader.put(HDR_H, 2);
                         storeHeader.put(HDR_BLOCK_SIZE, BLOCK_SIZE);
                         storeHeader.put(HDR_FORMAT, FORMAT_WRITE_MAX);
                         storeHeader.put(HDR_CREATED, creationTime);
                         setLastChunk(null);
+                        //写fileHeader
                         writeStoreHeader();
                     } else {
                         readStoreHeader();
@@ -1108,11 +1110,16 @@ public class MVStore implements AutoCloseable {
         DataUtils.appendMap(buff, HDR_FLETCHER, checksum);
         buff.append('\n');
         bytes = buff.toString().getBytes(StandardCharsets.ISO_8859_1);
+        //分配2个blocksize空间
         ByteBuffer header = ByteBuffer.allocate(2 * BLOCK_SIZE);
         header.put(bytes);
+        //移到第二个blocksize起始处
         header.position(BLOCK_SIZE);
+        //再写一次fileheader（为了安全）
         header.put(bytes);
+        //将position指向0
         header.rewind();
+        //将整两个块写入filechannel
         write(0, header);
     }
 
