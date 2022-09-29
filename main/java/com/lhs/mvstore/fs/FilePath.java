@@ -38,7 +38,7 @@ public abstract class FilePath {
         FilePath def = null;
         ConcurrentHashMap<String, FilePath> map = new ConcurrentHashMap<>();
         for (String c : new String[] {
-                "com.ysq.persistencebtree.mvstore.fs.FilePathDisk"
+                "com.lhs.mvstore.fs.FilePathDisk"
         }) {
             try {
                 FilePath p = (FilePath) Class.forName(c).getDeclaredConstructor().newInstance();
