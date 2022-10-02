@@ -328,6 +328,7 @@ public class MVStore implements AutoCloseable {
                         //写fileHeader
                         writeStoreHeader();
                     } else {
+                        //读文件头
                         readStoreHeader();
                     }
                 } finally {
@@ -828,6 +829,7 @@ public class MVStore implements AutoCloseable {
 
         if (assumeCleanShutdown) {
             // quickly check latest 20 chunks referenced in meta table
+            //读取最新的20个chunk。其中用到了一个优先队列来对chunk排序
             Queue<Chunk> chunksToVerify = new PriorityQueue<>(20, Collections.reverseOrder(chunkComparator));
             try {
                 setLastChunk(newest);
