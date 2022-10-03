@@ -1205,6 +1205,8 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
     /**
      * Create empty leaf node page.
      *
+     * 创建一个空page
+     *
      * @return new page
      */
     protected Page createEmptyLeaf() {
