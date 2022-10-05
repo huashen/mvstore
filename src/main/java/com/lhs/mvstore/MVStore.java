@@ -836,6 +836,9 @@ public class MVStore implements AutoCloseable {
                 // load the chunk metadata: although meta's root page resides in the lastChunk,
                 // traversing meta map might recursively load another chunk(s)
                 Cursor cursor = layout.cursor(DataUtils.META_CHUNK);
+                /**
+                 * 把layout中的"chunk."开头的键都读出来，放到chunks这个map和优先队列chunksToVerify中。并且让优先队列数量保存在最多19个
+                 */
                 while (cursor.hasNext() && cursor.next().startsWith(DataUtils.META_CHUNK)) {
                     Chunk c = Chunk.fromString(cursor.getValue());
                     assert c.version <= currentVersion;
