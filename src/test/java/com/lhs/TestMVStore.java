@@ -18,7 +18,7 @@ public class TestMVStore {
     private static String MVDBFILE = "/Users/huashen/test15.mv.db";
 
     @Test
-    public void testOpenMVMap() {
+    public static void testOpenMVMap() {
         String fileName = MVDBFILE;
         FileUtils.delete(fileName);
 
@@ -31,4 +31,16 @@ public class TestMVStore {
         s.close();
     }
 
+    @Test
+    public static void testReadMVMap() {
+        String fileName = MVDBFILE;
+        MVStore s = MVStore.open(fileName);
+        MVMap map = s.openMap("data");
+        System.out.println(map.get("399"));
+    }
+
+    public static void main(String[] args) {
+        testOpenMVMap();
+        testReadMVMap();
+    }
 }
