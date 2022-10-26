@@ -595,7 +595,9 @@ public abstract class Page implements Cloneable {
         }
         boolean compressed = (type & DataUtils.PAGE_COMPRESSED) != 0;
 
+        //读key
         map.read(buff, keys, keyCount);
+        //如果是叶子结点的话会继续读入内容
         if (isLeaf()) {
             readPayLoad(buff);
         }
@@ -1453,6 +1455,7 @@ public abstract class Page implements Cloneable {
         protected void readPayLoad(ByteBuffer buff) {
             int keyCount = getKeyCount();
             values = createValueStorage(keyCount);
+            //Leaf 的变量 V[] values，传入去读出来然后赋值
             map.read(buff, values, getKeyCount());
         }
 
