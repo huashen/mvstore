@@ -389,8 +389,10 @@ public final class Chunk {
         while (true) {
             long originalBlock = block;
             try {
+                //filePos：chunk的起始位置
                 long filePos = originalBlock * MVStore.BLOCK_SIZE;
                 long maxPos = filePos + len * MVStore.BLOCK_SIZE;
+                // chunk的起始位置加上这个页的偏移量
                 filePos += offset;
                 if (filePos < 0) {
                     throw DataUtils.newMVStoreException(
@@ -406,12 +408,14 @@ public final class Chunk {
                     // TODO: remove this adjustment when page on disk format is re-organized
                     length += 4;
                 }
+                //计算出page的最大长度，不是page的精确长度
                 length = (int) Math.min(maxPos - filePos, length);
                 if (length < 0) {
                     throw DataUtils.newMVStoreException(DataUtils.ERROR_FILE_CORRUPT,
                             "Illegal page length {0} reading at {1}; max pos {2} ", length, filePos, maxPos);
                 }
 
+                //读入字节到ByteBuffer，其实位置filePos，长度length
                 ByteBuffer buff = fileStore.readFully(filePos, length);
 
                 if (originalBlock == block) {

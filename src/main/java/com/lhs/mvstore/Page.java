@@ -239,6 +239,7 @@ public abstract class Page implements Cloneable {
         boolean leaf = (DataUtils.getPageType(pos) & 1) == DataUtils.PAGE_TYPE_LEAF;
         Page p = leaf ? new Leaf(map) : new NonLeaf(map);
         p.pos = pos;
+        //核心方法，按照page结构来解析
         p.read(buff);
         return p;
     }

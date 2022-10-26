@@ -164,6 +164,7 @@ public class MVStore implements AutoCloseable {
      * The layout map. Contains chunks metadata and root locations for all maps.
      * This is relatively fast changing part of metadata
      */
+    //记录其他MVMap的元信息
     private final MVMap layout;
 
     /**
@@ -997,6 +998,11 @@ public class MVStore implements AutoCloseable {
         return false;
     }
 
+    /**
+     * 最新的chunk被传入
+     *
+     * @param last 最新chunk
+     */
     private void setLastChunk(Chunk last) {
         chunks.clear();
         lastChunk = last;
@@ -1012,6 +1018,7 @@ public class MVStore implements AutoCloseable {
             chunks.put(last.id, last);
         }
         lastMapId.set(mapId);
+        //layout就是记录其他MVMAP信息的系统Map
         layout.setRootPos(layoutRootPos, currentVersion - 1);
     }
 
@@ -2424,7 +2431,7 @@ public class MVStore implements AutoCloseable {
      * Read a page.
      *
      * @param map the map
-     * @param pos the page position
+     * @param pos the page position page指针，格式：高26位表示chunk的id，接着32位是chunk内的偏移量，接着5位是长度编码，最后1位是page的类型(叶子结点还是内部结点)
      * @return the page
      */
     <K, V> Page readPage(MVMap map, long pos) {
@@ -2439,6 +2446,7 @@ public class MVStore implements AutoCloseable {
                 int pageOffset = DataUtils.getPageOffset(pos);
                 try {
                     ByteBuffer buff = chunk.readBufferForPage(fileStore, pageOffset, pos);
+                    //从ByteBuffer中读入Page
                     p = Page.read(buff, pos, map);
                 } catch (MVStoreException e) {
                     throw e;

@@ -574,6 +574,7 @@ public final class DataUtils {
      * @return the offset
      */
     public static int getPageOffset(long tocElement) {
+        //这里右移6位？右移6位再取整型就会得到32位的表示Page在chunk中的偏移量（注意高26位被强转成int后去掉了）
         return (int) (tocElement >> 6);
     }
 
