@@ -234,6 +234,7 @@ public final class DataUtils {
             return b;
         }
         // a separate function so that this one can be inlined
+        //当长度是个超过一个byte的范围的时候 返回一个整数int
         return readVarIntRest(buff, b);
     }
 

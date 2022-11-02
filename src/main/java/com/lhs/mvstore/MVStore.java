@@ -704,6 +704,7 @@ public class MVStore implements AutoCloseable {
             // the following can fail for various reasons
             try {
                 HashMap<String, String> m = DataUtils.parseChecksummedMap(buff);
+                System.out.println("i:=" + i + ", map:" + m);
                 if (m == null) {
                     assumeCleanShutdown = false;
                     continue;
@@ -788,6 +789,9 @@ public class MVStore implements AutoCloseable {
         long fileSize = fileStore.size();
         long blocksInStore = fileSize / BLOCK_SIZE;
 
+        /**
+         * 比较两个chunk的版本，谁的版本大就排在前面。如果版本相同，则比较block的大小，谁的block小就排在前面
+         */
         Comparator<Chunk> chunkComparator = (one, two) -> {
             int result = Long.compare(two.version, one.version);
             if (result == 0) {
@@ -833,6 +837,7 @@ public class MVStore implements AutoCloseable {
             //读取最新的20个chunk。其中用到了一个优先队列来对chunk排序
             Queue<Chunk> chunksToVerify = new PriorityQueue<>(20, Collections.reverseOrder(chunkComparator));
             try {
+                //newest即是最新Chunk,用最新Chunk作为参数初始化layout这个MVMap
                 setLastChunk(newest);
                 // load the chunk metadata: although meta's root page resides in the lastChunk,
                 // traversing meta map might recursively load another chunk(s)
@@ -912,6 +917,7 @@ public class MVStore implements AutoCloseable {
         }
 
         // build the free space list
+        //清理工作
         for (Chunk c : chunks.values()) {
             if (c.isSaved()) {
                 long start = c.block * BLOCK_SIZE;
@@ -1074,6 +1080,7 @@ public class MVStore implements AutoCloseable {
     private Chunk readChunkHeaderAndFooter(long block, int expectedId) {
         Chunk header = readChunkHeaderOptionally(block, expectedId);
         if (header != null) {
+            //读取Chunk的尾
             Chunk footer = readChunkFooter(block + header.len);
             if (footer == null || footer.id != expectedId || footer.block != header.block) {
                 return null;

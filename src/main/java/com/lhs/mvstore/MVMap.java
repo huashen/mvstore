@@ -693,6 +693,7 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
     final void setRootPos(long rootPos, long version) {
         //根据page的地址rootPos去存储文件读入
         Page root = readOrCreateRootPage(rootPos);
+        //将读出来的page传入方法setInitialRoot
         setInitialRoot(root, version);
         setWriteVersion(store.getCurrentVersion());
     }
@@ -1170,6 +1171,7 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
     final RootReference setWriteVersion(long writeVersion) {
         int attempt = 0;
         while (true) {
+            //获取rootReference
             RootReference rootReference = flushAndGetRoot();
             if (rootReference.version >= writeVersion) {
                 return rootReference;
