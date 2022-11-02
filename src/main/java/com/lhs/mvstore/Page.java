@@ -651,7 +651,9 @@ public abstract class Page implements Cloneable {
      */
     protected final int write(Chunk chunk, WriteBuffer buff, List<Long> toc) {
         pageNo = toc.size();
+        //存储key的数量
         int keyCount = getKeyCount();
+        //开始的位置
         int start = buff.position();
         buff.putInt(0)          // placeholder for pageLength
                 .putShort((byte) 0) // placeholder for check
@@ -659,10 +661,12 @@ public abstract class Page implements Cloneable {
                 .putVarInt(map.getId())
                 .putVarInt(keyCount);
         int typePos = buff.position();
+        //页类型 0：叶节点 1：非叶节点
         int type = isLeaf() ? DataUtils.PAGE_TYPE_LEAF : DataUtils.PAGE_TYPE_NODE;
         buff.put((byte) type);
         int childrenPos = buff.position();
         writeChildren(buff, true);
+        //获取当前位置，为后面压缩做准备
         int compressStart = buff.position();
         map.write(buff, keys, keyCount);
         writeValues(buff);
@@ -671,6 +675,7 @@ public abstract class Page implements Cloneable {
         if (expLen > 16) {
             int compressionLevel = store.getCompressionLevel();
         }
+        //获取pageLength
         int pageLength = buff.position() - start;
         long tocElement = DataUtils.getTocElement(getMapId(), start, buff.position() - start, type);
         toc.add(tocElement);
@@ -678,6 +683,7 @@ public abstract class Page implements Cloneable {
         int check = DataUtils.getCheckValue(chunkId)
                 ^ DataUtils.getCheckValue(start)
                 ^ DataUtils.getCheckValue(pageLength);
+        //更新pageLength 和 checkValue
         buff.putInt(start, pageLength).
                 putShort(start + 4, (short) check);
         if (isSaved()) {
