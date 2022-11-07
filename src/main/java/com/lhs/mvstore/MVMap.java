@@ -1750,6 +1750,7 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
         IntValueHolder unsavedMemoryHolder = new IntValueHolder();
         int attempt = 0;
         while (true) {
+            // 首先获取这个MVMap 的RootReference，通过RootReference能找到这个MVMap的rootPage
             RootReference rootReference = flushAndGetRoot();
             boolean locked = rootReference.isLockedByCurrentThread();
             if (!locked) {
@@ -1761,12 +1762,14 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
                     locked = true;
                 }
             }
+            //该MVMap的rootPage
             Page rootPage = rootReference.root;
             long version = rootReference.version;
             CursorPos tip;
             String result;
             unsavedMemoryHolder.value = 0;
             try {
+                // 从rootPage中开始获取key对应的value，这里用了一个CursorPos类来封装
                 CursorPos pos = CursorPos.traverseDown(rootPage, key);
                 if (!locked && rootReference != getRoot()) {
                     continue;

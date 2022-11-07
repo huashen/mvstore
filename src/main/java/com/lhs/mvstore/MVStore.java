@@ -1497,6 +1497,13 @@ public class MVStore implements AutoCloseable {
         }
     }
 
+    /**
+     * 创建一个Chunk
+     *
+     * @param time
+     * @param version
+     * @return
+     */
     private Chunk createChunk(long time, long version) {
         int chunkId = lastChunkId;
         if (chunkId != 0) {
@@ -1621,9 +1628,11 @@ public class MVStore implements AutoCloseable {
             buff.position(0);
             assert c.pageCountLive == c.pageCount : c;
             assert c.occupancy.cardinality() == 0 : c;
+            //chunk写header
             c.writeChunkHeader(buff, headerLength);
 
             buff.position(buff.limit() - Chunk.FOOTER_LENGTH);
+            //chunk写footer
             buff.put(c.getFooterBytes());
         } finally {
             saveChunkLock.unlock();
