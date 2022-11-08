@@ -1755,6 +1755,7 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
             boolean locked = rootReference.isLockedByCurrentThread();
             if (!locked) {
                 if (attempt++ == 0) {
+                    //写入前调用此方法，检查是否可以写入
                     beforeWrite();
                 }
                 if (attempt > 3 || rootReference.isLocked()) {
@@ -1832,6 +1833,7 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
                     }
                     case PUT: {
                         value = decisionMaker.selectValue(result, value);
+                        // 最底层的叶子节点复制一份。这里是浅拷贝
                         p = p.copy();
                         if (index < 0) {
                             p.insertLeaf(-index - 1, key, value);

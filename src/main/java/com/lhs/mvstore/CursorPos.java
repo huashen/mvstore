@@ -50,6 +50,7 @@ public final class CursorPos {
                 index = -index;
             }
             cursorPos = new CursorPos(page, index, cursorPos);
+            // 这里读入子page(有IO操作)
             page = page.getChildPage(index);
         }
         return new CursorPos(page, page.binarySearch(key), cursorPos);
