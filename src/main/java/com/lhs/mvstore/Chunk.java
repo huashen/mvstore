@@ -391,6 +391,7 @@ public final class Chunk {
             try {
                 //filePos：chunk的起始位置
                 long filePos = originalBlock * MVStore.BLOCK_SIZE;
+                // 这个chunk的最大位置
                 long maxPos = filePos + len * MVStore.BLOCK_SIZE;
                 // chunk的起始位置加上这个页的偏移量
                 filePos += offset;
@@ -415,6 +416,7 @@ public final class Chunk {
                             "Illegal page length {0} reading at {1}; max pos {2} ", length, filePos, maxPos);
                 }
 
+                //利用FileChannel读入长度为length的内容到ByteBuffer 。java.nio.channels.FileChannel
                 //读入字节到ByteBuffer，其实位置filePos，长度length
                 ByteBuffer buff = fileStore.readFully(filePos, length);
 

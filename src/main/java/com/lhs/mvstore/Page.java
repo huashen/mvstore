@@ -414,7 +414,9 @@ public abstract class Page implements Cloneable {
         String[] bKeys = createKeyStorage(bCount);
         System.arraycopy(keys, 0, aKeys, 0, aCount);
         System.arraycopy(keys, getKeyCount() - bCount, bKeys, 0, bCount);
+        //原来的page的keys数组指向aKeys
         keys = aKeys;
+        // 返回新的新的页的keys
         return bKeys;
     }
 
@@ -515,6 +517,7 @@ public abstract class Page implements Cloneable {
     final void insertKey(int index, String key) {
         int keyCount = getKeyCount();
         assert index <= keyCount : index + " > " + keyCount;
+        // 复制一份新的keys，位置index留一个gap
         String[] newKeys = createKeyStorage(keyCount + 1);
         DataUtils.copyWithGap(keys, newKeys, keyCount, index);
         keys = newKeys;
@@ -595,10 +598,11 @@ public abstract class Page implements Cloneable {
         }
         boolean compressed = (type & DataUtils.PAGE_COMPRESSED) != 0;
 
-        //读key
+        //读入key值到key数组——K[] keys
         map.read(buff, keys, keyCount);
         //如果是叶子结点的话会继续读入内容
         if (isLeaf()) {
+            //分叶子结点和非叶子结点
             readPayLoad(buff);
         }
         diskSpaceUsed = pageLength;
@@ -888,11 +892,13 @@ public abstract class Page implements Cloneable {
         /**
          * The position, if known, or 0.
          */
+        //高26位表示chunk的id，接着32位是chunk内的偏移量，接着5位是长度编码，最后1位是page的类型(叶子结点还是内部结点)
         private long pos;
 
         /**
          * The page, if in memory, or null.
          */
+        //如果已经page已经在内存了则非空
         private Page page;
 
         /**
@@ -973,7 +979,9 @@ public abstract class Page implements Cloneable {
         }
     }
 
-
+    /**
+     * 非叶子节点
+     */
     private static class NonLeaf extends Page {
         /**
          * The child page references.
@@ -1011,10 +1019,17 @@ public abstract class Page implements Cloneable {
             return new IncompleteNonLeaf(map, this);
         }
 
+        /**
+         * 将Page从外部设备读入内存的方法
+         *
+         * @param index the index
+         * @return
+         */
         @Override
         public Page getChildPage(int index) {
             PageReference ref = children[index];
             Page page = ref.getPage();
+            // 子节点的page为空，则调用map的readPage()方法进行IO读入
             if (page == null) {
                 page = map.readPage(ref.getPos());
                 assert ref.getPos() == page.getPos();
@@ -1038,10 +1053,12 @@ public abstract class Page implements Cloneable {
             assert !isSaved();
             int b = getKeyCount() - at;
             String[] bKeys = splitKeys(at, b - 1);
+            // NonLeaf创建指向子节点的PageReference数组
             PageReference[] aChildren = createRefStorage(at + 1);
             PageReference[] bChildren = createRefStorage(b);
             System.arraycopy(children, 0, aChildren, 0, at + 1);
             System.arraycopy(children, at + 1, bChildren, 0, b);
+            //旧Page的children指向新创建的aChildren
             children = aChildren;
 
             long t = 0;
@@ -1053,6 +1070,7 @@ public abstract class Page implements Cloneable {
             for (PageReference x : bChildren) {
                 t += x.count;
             }
+            // 创建新的NonLeaf page。因为是内部节点，所以没有values，但是有指向子节点page的属性bChildren
             Page newPage = createNode(map, bKeys, bChildren, t, 0);
             return newPage;
         }
@@ -1311,6 +1329,9 @@ public abstract class Page implements Cloneable {
     }
 
 
+    /**
+     * 叶子节点
+     */
     private static class Leaf extends Page {
         /**
          * The storage for values.
@@ -1366,8 +1387,10 @@ public abstract class Page implements Cloneable {
                 String[] aValues = createValueStorage(at);
                 System.arraycopy(values, 0, aValues, 0, at);
                 System.arraycopy(values, at, bValues, 0, b);
+                // 叶子节点的values指向 aValues。 新的page的values指向bValues
                 values = aValues;
             }
+            // 新的页初始化。传入keys和values
             Page newPage = createLeaf(map, bKeys, bValues, 0);
             return newPage;
         }
@@ -1414,11 +1437,14 @@ public abstract class Page implements Cloneable {
 
         @Override
         public void insertLeaf(int index, String key, String value) {
+            //返回keys数组的长度
             int keyCount = getKeyCount();
+            // 将key插入index的位置
             insertKey(index, key);
 
             if (values != null) {
                 String[] newValues = createValueStorage(keyCount + 1);
+                // 复制一份新的newValues，位置index留一个gap
                 DataUtils.copyWithGap(values, newValues, keyCount, index);
                 values = newValues;
                 setValueInternal(index, value);

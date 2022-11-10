@@ -1836,17 +1836,23 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
                         // 最底层的叶子节点复制一份。这里是浅拷贝
                         p = p.copy();
                         if (index < 0) {
+                            // 底层叶子节点page插入key，value。位置是-index-1
                             p.insertLeaf(-index - 1, key, value);
                             int keyCount;
+                            //B+树的满节点操作。如果超过阈值，将会分裂
                             while ((keyCount = p.getKeyCount()) > store.getKeysPerPage()
                                     || p.getMemory() > store.getMaxPageSize()
                                     && keyCount > (p.isLeaf() ? 1 : 2)) {
                                 long totalCount = p.getTotalCount();
+                                // keyCount的一半，中间位置
                                 int at = keyCount >> 1;
                                 String k = p.getKey(at);
+                                // page的分裂操作。分leaf和nonleaf
                                 Page split = p.split(at);
                                 unsavedMemoryHolder.value += p.getMemory() + split.getMemory();
+                                //pos == null表示是根节点
                                 if (pos == null) {
+                                    //创建长度是1的keys数组
                                     String[] keys = p.createKeyStorage(1);
                                     keys[0] = k;
                                     Page.PageReference[] children = Page.createRefStorage(2);
@@ -1855,12 +1861,17 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
                                     p = Page.createNode(this, keys, children, totalCount, 0);
                                     break;
                                 }
+                                //p是子节点
                                 Page c = p;
+                                // pos是父节点的CursorPos
                                 p = pos.page;
                                 index = pos.index;
                                 pos = pos.parent;
+                                // 父page 浅拷贝
                                 p = p.copy();
+                                // 父page 将index 指向新分裂出来的page split
                                 p.setChild(index, split);
+                                // 将子节点的key 放到父节点上。并且在父节点的children中的index指向子节点page
                                 p.insertNode(index, k, c);
                             }
                         } else {

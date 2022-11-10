@@ -34,6 +34,8 @@ public final class CursorPos {
     }
 
     /**
+     * 迭代读入page
+     *
      * Searches for a given key and creates a breadcrumb trail through a B-tree
      * rooted at a given Page. Resulting path starts at "insertion point" for a
      * given key and goes back to the root.

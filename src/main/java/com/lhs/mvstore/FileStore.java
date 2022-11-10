@@ -89,6 +89,8 @@ public class FileStore {
     /**
      * Read from the file.
      *
+     * 从位置pos读取len字节到ByteBuffer
+     *
      * @param pos the write position
      * @param len the number of bytes to read
      * @return the byte buffer

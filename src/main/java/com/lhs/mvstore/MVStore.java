@@ -1268,6 +1268,7 @@ public class MVStore implements AutoCloseable {
         Chunk c = chunks.get(chunkId);
         if (c == null) {
             checkOpen();
+            // chunk.getMetaKey(chunkId) 会返回字符串“chunk.chunkId”
             String s = layout.get(Chunk.getMetaKey(chunkId));
             if (s == null) {
                 throw DataUtils.newMVStoreException(
@@ -2458,6 +2459,7 @@ public class MVStore implements AutoCloseable {
             }
             Page p = null;
             if (p == null) {
+                //通过pos值获取
                 Chunk chunk = getChunk(pos);
                 int pageOffset = DataUtils.getPageOffset(pos);
                 try {
