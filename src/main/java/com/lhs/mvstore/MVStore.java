@@ -273,6 +273,7 @@ public class MVStore implements AutoCloseable {
         compressionLevel = DataUtils.getConfigParam(config, "compress", 0);
         String fileName = (String) config.get("fileName");
         FileStore fileStore = (FileStore) config.get("fileStore");
+        //如果没有设置filestore和filename都为null，直接返回，可能表示只是用内存，不持久化
         if (fileStore == null) {
             fileStoreIsProvided = false;
             if (fileName != null) {
@@ -316,6 +317,7 @@ public class MVStore implements AutoCloseable {
                 try {
                     if (!fileStoreIsProvided) {
                         boolean readOnly = config.containsKey("readOnly");
+                        //打开文件
                         this.fileStore.open(fileName, readOnly);
                     }
                     if (this.fileStore.size() == 0) {
