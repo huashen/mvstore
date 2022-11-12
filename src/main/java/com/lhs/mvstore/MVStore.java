@@ -118,11 +118,15 @@ public class MVStore implements AutoCloseable {
 
     /**
      * Single-threaded executor for serialization of the store snapshot into ByteBuffer
+     *
+     * 存储数据到ByteBuffer的线程
      */
     private ThreadPoolExecutor serializationExecutor;
 
     /**
      * Single-threaded executor for saving ByteBuffer as a new Chunk
+     *
+     * 序列化ByteBuffer成新Chunk
      */
     private ThreadPoolExecutor bufferSaveExecutor;
 
@@ -354,6 +358,7 @@ public class MVStore implements AutoCloseable {
             // setAutoCommitDelay starts the thread, but only if
             // the parameter is different from the old value
             int delay = DataUtils.getConfigParam(config, "autoCommitDelay", 1000);
+            //启动一个定时任务执行后台线程执行自动提交任务
             setAutoCommitDelay(delay);
         } else {
             autoCommitMemory = 0;
@@ -3238,8 +3243,10 @@ public class MVStore implements AutoCloseable {
                         }
                     }
                 }
+                //停止serializationExecutor线程
                 shutdownExecutor(serializationExecutor);
                 serializationExecutor = null;
+                //停止bufferSaveExecutor线程
                 shutdownExecutor(bufferSaveExecutor);
                 bufferSaveExecutor = null;
                 break;
@@ -3266,6 +3273,7 @@ public class MVStore implements AutoCloseable {
         if (fileStore == null || fileStore.isReadOnly()) {
             return;
         }
+        //设置BackgroundWriterThread线程停止后做的动作
         stopBackgroundThread(true);
         // start the background thread if needed
         if (millis > 0 && isOpen()) {
