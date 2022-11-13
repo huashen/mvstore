@@ -1048,6 +1048,12 @@ public abstract class Page implements Cloneable {
             throw new UnsupportedOperationException();
         }
 
+        /**
+         * NonLeaf的分裂split操作
+         *
+         * @param at the split index
+         * @return
+         */
         @Override
         public Page split(int at) {
             assert !isSaved();
@@ -1377,6 +1383,12 @@ public abstract class Page implements Cloneable {
             return values[index];
         }
 
+        /**
+         * Leaf的分裂split操作
+         *
+         * @param at the split index
+         * @return
+         */
         @Override
         public Page split(int at) {
             assert !isSaved();
