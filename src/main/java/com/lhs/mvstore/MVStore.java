@@ -210,11 +210,13 @@ public class MVStore implements AutoCloseable {
      * Ordered collection of all version usage counters for all versions starting
      * from oldestVersionToKeep and up to current.
      */
+    //从旧到新的队列
     private final Deque<TxCounter> versions = new LinkedList<>();
 
     /**
      * Counter of open transactions for the latest (current) store version
      */
+    //当前打开事务数统计
     private volatile TxCounter currentTxCounter = new TxCounter(currentVersion);
 
     /**
@@ -304,6 +306,7 @@ public class MVStore implements AutoCloseable {
         keysPerPage = DataUtils.getConfigParam(config, "keysPerPage", 48);
         backgroundExceptionHandler =
                 (UncaughtExceptionHandler) config.get("backgroundExceptionHandler");
+        //创建layout MVMap
         layout = new MVMap(this, 0);
         if (this.fileStore != null) {
             retentionTime = this.fileStore.getDefaultRetentionTime();
@@ -351,6 +354,7 @@ public class MVStore implements AutoCloseable {
             }
             lastCommitTime = getTimeSinceCreation();
 
+            //创建meta MVMap
             meta = openMetaMap();
             scrubLayoutMap();
             scrubMetaMap();
@@ -368,6 +372,10 @@ public class MVStore implements AutoCloseable {
         onVersionChange(currentVersion);
     }
 
+    /**
+     * 创建meta MVMap
+     * @return
+     */
     private MVMap openMetaMap() {
         String metaIdStr = layout.get(META_ID_KEY);
         int metaId;
@@ -530,6 +538,7 @@ public class MVStore implements AutoCloseable {
             assert getMap(id) == null;
             c.put("id", id);
             c.put("createVersion", currentVersion);
+            //新建一个MVMap
             M map = builder.create(this, c);
             String x = Integer.toHexString(id);
             meta.put(MVMap.getMapKey(id), map.asString(name));
