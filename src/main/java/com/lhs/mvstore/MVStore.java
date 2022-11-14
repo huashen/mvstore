@@ -149,6 +149,8 @@ public class MVStore implements AutoCloseable {
 
     /**
      * The map of chunks.
+     *
+     * 保存Chunk的map chunk id->chunk
      */
     private final ConcurrentHashMap<Integer, Chunk> chunks = new ConcurrentHashMap<>();
 
@@ -1364,6 +1366,12 @@ public class MVStore implements AutoCloseable {
         return commit(x -> true);
     }
 
+    /**
+     * 执行数据保存到硬盘逻辑
+     *
+     * @param check
+     * @return
+     */
     private long commit(Predicate<MVStore> check) {
         // we need to prevent re-entrance, which may be possible,
         // because meta map is modified within storeNow() and that
@@ -1386,6 +1394,7 @@ public class MVStore implements AutoCloseable {
         assert !saveChunkLock.isHeldByCurrentThread();
         if (isOpenOrStopping()) {
             if (hasUnsavedChanges()) {
+                //删除已不使用的chunk
                 dropUnusedChunks();
                 try {
                     currentStoreVersion = currentVersion;
@@ -1456,6 +1465,12 @@ public class MVStore implements AutoCloseable {
         action.run();
     }
 
+    /**
+     * 收集数据发生改变的Page
+     *
+     * @param version
+     * @return
+     */
     private ArrayList<Page> collectChangedMapRoots(long version) {
         long lastStoredVersion = version - 2;
         ArrayList<Page> changed = new ArrayList<>();
@@ -1494,12 +1509,25 @@ public class MVStore implements AutoCloseable {
         return changed;
     }
 
+    /**
+     * 保存数据，从Page到Chunk
+     *
+     * @param syncRun
+     * @param reservedLow
+     * @param reservedHighSupplier
+     * @param changed
+     * @param time
+     * @param version
+     */
     private void serializeAndStore(boolean syncRun, long reservedLow, Supplier<Long> reservedHighSupplier,
                                    ArrayList<Page> changed, long time, long version) {
         serializationLock.lock();
         try {
+            //创建一个chunk
             Chunk c = createChunk(time, version);
+            //保存chunk到map
             chunks.put(c.id, c);
+            //获取写Buffer
             WriteBuffer buff = getWriteBuffer();
             serializeToBuffer(buff, changed, c, reservedLow, reservedHighSupplier);
 
