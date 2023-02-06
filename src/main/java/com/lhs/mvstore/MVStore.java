@@ -1426,6 +1426,7 @@ public class MVStore implements AutoCloseable {
             // it is ok, since that path suppose to be single-threaded under storeLock
             //noinspection NonAtomicOperationOnVolatileField
             long version = ++currentVersion;
+            //数据发生改变的page才会落盘
             ArrayList<Page> changed = collectChangedMapRoots(version);
 
             assert storeLock.isHeldByCurrentThread();
@@ -1596,6 +1597,7 @@ public class MVStore implements AutoCloseable {
     private void serializeToBuffer(WriteBuffer buff, ArrayList<Page> changed, Chunk c,
                                    long reservedLow, Supplier<Long> reservedHighSupplier) {
         // need to patch the header later
+        //写chunk header
         c.writeChunkHeader(buff, 0);
         int headerLength = buff.position() + 44;
         buff.position(headerLength);
