@@ -1475,6 +1475,7 @@ public class MVStore implements AutoCloseable {
     private ArrayList<Page> collectChangedMapRoots(long version) {
         long lastStoredVersion = version - 2;
         ArrayList<Page> changed = new ArrayList<>();
+        //遍历系统MVMap
         for (Iterator<MVMap> iter = maps.values().iterator(); iter.hasNext(); ) {
             MVMap map = iter.next();
             RootReference rootReference = map.setWriteVersion(version);
