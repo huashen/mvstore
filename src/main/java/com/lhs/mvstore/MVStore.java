@@ -1691,6 +1691,7 @@ public class MVStore implements AutoCloseable {
         saveChunkLock.lock();
         try {
             buff.position(0);
+            //一个block=4096字节
             long filePos = c.block * BLOCK_SIZE;
             write(filePos, buff.getBuffer());
             releaseWriteBuffer(buff);
