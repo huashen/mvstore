@@ -1221,6 +1221,7 @@ public class MVStore implements AutoCloseable {
                                 setRetentionTime(0);
                                 commit();
                                 if (allowedCompactionTime > 0) {
+                                    //压缩文件
                                     compactFile(allowedCompactionTime);
                                 } else if (allowedCompactionTime < 0) {
                                     doMaintenance(autoCompactFillRate);
@@ -1230,7 +1231,9 @@ public class MVStore implements AutoCloseable {
                                 try {
                                     shrinkFileIfPossible(0);
                                     storeHeader.put(HDR_CLEAN, 1);
+                                    //重新写storeHeader
                                     writeStoreHeader();
+                                    //强制写入文件
                                     sync();
                                     assert validateFileLength("on close");
                                 } finally {
@@ -1246,6 +1249,7 @@ public class MVStore implements AutoCloseable {
                             for (MVMap m : new ArrayList<>(maps.values())) {
                                 m.close();
                             }
+                            //清空chunks和MVMaps
                             chunks.clear();
                             maps.clear();
                         } finally {
