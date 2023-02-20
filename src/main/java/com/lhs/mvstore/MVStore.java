@@ -1532,6 +1532,7 @@ public class MVStore implements AutoCloseable {
      */
     private void serializeAndStore(boolean syncRun, long reservedLow, Supplier<Long> reservedHighSupplier,
                                    ArrayList<Page> changed, long time, long version) {
+        //加锁
         serializationLock.lock();
         try {
             //创建一个chunk
@@ -1539,9 +1540,12 @@ public class MVStore implements AutoCloseable {
             //保存chunk到map
             chunks.put(c.id, c);
             //获取写Buffer
+            //WriteBuffer里面使用ByteBuffer存储数据 WriteBuffer是一个写缓存，B+树的数据都会写到该对象，而这些数据最终使用ByteBuffer保存
             WriteBuffer buff = getWriteBuffer();
+            //将修改的B+树页面序列化到WriteBuffer中
             serializeToBuffer(buff, changed, c, reservedLow, reservedHighSupplier);
 
+            //线程池bufferSaveExecutor将WriteBuffer同步到磁盘上
             submitOrRun(bufferSaveExecutor, () -> storeBuffer(c, buff, changed), syncRun);
 
         } catch (MVStoreException e) {
@@ -1724,6 +1728,7 @@ public class MVStore implements AutoCloseable {
             saveChunkLock.unlock();
         }
 
+        //将已经保存到磁盘上的页面从内存中删除，防止占用内存过多
         for (Page p : changed) {
             p.releaseSavedPages();
         }
