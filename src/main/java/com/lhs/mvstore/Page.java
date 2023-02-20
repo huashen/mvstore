@@ -1449,16 +1449,18 @@ public abstract class Page implements Cloneable {
 
         @Override
         public void insertLeaf(int index, String key, String value) {
-            //返回keys数组的长度
+            //返回keys数组的长度 keyCount表示当前页存储key的个数
             int keyCount = getKeyCount();
-            // 将key插入index的位置
+            // 将key插入index的位置 将key插入叶子节点中，insertKey的执行逻辑和下面if分之里面的代码基本一致
             insertKey(index, key);
 
             if (values != null) {
+                //创建空的value数组
                 String[] newValues = createValueStorage(keyCount + 1);
-                // 复制一份新的newValues，位置index留一个gap
+                // 复制一份新的newValues，位置index留一个gap 将旧value数组的值复制到newValues中，并将index位置空出来
                 DataUtils.copyWithGap(values, newValues, keyCount, index);
                 values = newValues;
+                //将value插入到指定下标位置
                 setValueInternal(index, value);
             }
         }

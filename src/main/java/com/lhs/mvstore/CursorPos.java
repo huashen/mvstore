@@ -44,17 +44,28 @@ public final class CursorPos {
      * @param key       the key to search for
      * @return head of the CursorPos chain (insertion point)
      */
+    /**
+     * 第一次调用时，page就是root页
+     */
     static  CursorPos traverseDown(Page page, String key) {
         CursorPos cursorPos = null;
+        //如果page不是叶子节点就继续搜索
         while (!page.isLeaf()) {
+            //使用二分查找搜索
             int index = page.binarySearch(key) + 1;
             if (index < 0) {
+                //如果index是负值，表示要插入的位置
                 index = -index;
             }
             cursorPos = new CursorPos(page, index, cursorPos);
             // 这里读入子page(有IO操作)
+            //找index对应的孩子节点 如果孩子节点不在内存中，便从磁盘加载
             page = page.getChildPage(index);
         }
+        /**
+         * 走完上面的循环后，page表示的便是叶子节点，在叶子节点上执行一次二分查找，定位到要插入的位置
+         * 参数cursorPos表示当前叶子节点的父节点
+         */
         return new CursorPos(page, page.binarySearch(key), cursorPos);
     }
 
