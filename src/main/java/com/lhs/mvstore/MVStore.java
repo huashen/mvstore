@@ -1397,6 +1397,7 @@ public class MVStore implements AutoCloseable {
         assert storeLock.isHeldByCurrentThread();
         assert !saveChunkLock.isHeldByCurrentThread();
         if (isOpenOrStopping()) {
+            //检查当前是否有页面发生了变化
             if (hasUnsavedChanges()) {
                 //删除已不使用的chunk
                 dropUnusedChunks();
@@ -1425,6 +1426,7 @@ public class MVStore implements AutoCloseable {
 
     private void storeNow(boolean syncWrite, long reservedLow, Supplier<Long> reservedHighSupplier) {
         try {
+            //记录当前系统时间
             lastCommitTime = getTimeSinceCreation();
             int currentUnsavedPageCount = unsavedMemory;
             // it is ok, since that path suppose to be single-threaded under storeLock
@@ -1434,6 +1436,9 @@ public class MVStore implements AutoCloseable {
             ArrayList<Page> changed = collectChangedMapRoots(version);
 
             assert storeLock.isHeldByCurrentThread();
+            // serializationExecutor：线程池 setAutoCommitDelay方法创建的
+            //changed：里面记录了所有发生变化的B+树根页面，也就是记录了发生变化的表或者索引
+            //version: 最新的版本号
             submitOrRun(serializationExecutor,
                     () -> serializeAndStore(syncWrite, reservedLow, reservedHighSupplier,
                             changed, lastCommitTime, version),
@@ -3127,6 +3132,7 @@ public class MVStore implements AutoCloseable {
             // but according to a test it doesn't really help
 
             long time = getTimeSinceCreation();
+            //如果最后一次刷盘刷新到现在为止超过了autoCommitDelay，那么执行一次tryCommit
             if (time > lastCommitTime + autoCommitDelay) {
                 tryCommit();
                 if (autoCompactFillRate < 0) {
@@ -3319,15 +3325,19 @@ public class MVStore implements AutoCloseable {
             return;
         }
         //设置BackgroundWriterThread线程停止后做的动作
+        //停止当前正在运行的后台线程，并且关闭两个线程池 serializationExecutor 和 bufferSaveExecutor
         stopBackgroundThread(true);
         // start the background thread if needed
         if (millis > 0 && isOpen()) {
             int sleep = Math.max(1, millis / 10);
+            //创建后台线程
             BackgroundWriterThread t =
                     new BackgroundWriterThread(this, sleep,
                             fileStore.toString());
             if (backgroundWriterThread.compareAndSet(null, t)) {
+                //启动线程
                 t.start();
+                //创建两个线程池
                 serializationExecutor = createSingleThreadExecutor("H2-serialization");
                 bufferSaveExecutor = createSingleThreadExecutor("H2-save");
             }
