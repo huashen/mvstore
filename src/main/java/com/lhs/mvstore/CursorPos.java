@@ -11,6 +11,7 @@ public final class CursorPos {
     /**
      * The page at the current level.
      */
+    //当前正在遍历的页面
     public Page page;
 
     /**
@@ -18,12 +19,14 @@ public final class CursorPos {
      * in case of intermediate nodes, or index of the target key for leaf a node.
      * In a later case, it could be negative, if the key is not present.
      */
+    //如果是叶子节点，表示当前正在遍历的Page对象的keys数组下标，index为负数，表示可以插入到keys数组的位置
     public int index;
 
     /**
      * Next node in the linked list, representing the position within parent level,
      * or null, if we are at the root level already.
      */
+    //表示当前正在遍历节点的父节点，父节点CursorPos对象中index属性值表示子节点在Page.keys数组中的下标
     public CursorPos parent;
 
 

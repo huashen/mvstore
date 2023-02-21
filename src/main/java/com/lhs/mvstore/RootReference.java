@@ -7,42 +7,59 @@ package com.lhs.mvstore;
  * The most important part of it is a reference to the root node.
  *
  * @author <a href='mailto:andrei.tokar@gmail.com'>Andrei Tokar</a>
+ *
+ * 根页面的引用
  */
 public final class RootReference {
 
     /**
      * The root page.
      */
+    //根页面
     public final Page root;
+
     /**
      * The version used for writing.
      */
+    //版本号 与写操作有关
     public final long version;
+
     /**
      * Counter of reenterant locks.
      */
+    //可重入锁的个数
     private final byte holdCount;
+
     /**
      * Lock owner thread id.
      */
+    //加锁线程id
     private final long ownerId;
+
     /**
      * Reference to the previous root in the chain.
      * That is the last root of the previous version, which had any data changes.
      * Versions without any data changes are dropped from the chain, as it built.
      */
+    //表示前一个跟页面
     volatile RootReference previous;
+
     /**
      * Counter for successful root updates.
      */
+    //根页面加锁成功个数
     final long updateCounter;
+
     /**
      * Counter for attempted root updates.
      */
+    //根页面尝试加锁失败的次数
     final long updateAttemptCounter;
+
     /**
      * Size of the occupied part of the append buffer.
      */
+    //追加缓冲区占用部分大小
     private final byte appendCounter;
 
 
