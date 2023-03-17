@@ -177,6 +177,7 @@ public class MVStore implements AutoCloseable {
      * The metadata map. Holds name -> id and id -> name and id -> metadata
      * mapping for all maps. This is relatively slow changing part of metadata
      */
+    //元数据Map
     private final MVMap meta;
 
     private final ConcurrentHashMap<Integer, MVMap> maps = new ConcurrentHashMap<>();
@@ -656,6 +657,19 @@ public class MVStore implements AutoCloseable {
      * </pre>
      *
      * @return the metadata map
+     */
+    /**
+     * 获取元数据Map
+     * 此map包含的信息:
+     *
+     *  chunk.1->chunk 1 的元数据。这是与chunk头相同的数据，加上活动页面的数量和最大活动页面长度。
+     *  map.1->map 1的元数据。条目包括名称，创建版本和类型。
+     *  name.data->名为“data”的map的map ID。值为“1”
+     *  root.1->map 1 的根位置
+     *  setting.storeVersion->store版本（用户定义的值）
+     *
+     *
+     * @return
      */
     public MVMap getMetaMap() {
         checkOpen();
