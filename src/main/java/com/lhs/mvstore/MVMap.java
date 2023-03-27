@@ -32,6 +32,7 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
     /**
      * Reference to the current root page.
      */
+    //根page的引用
     private final AtomicReference<RootReference> root;
 
     private final int id;
@@ -698,6 +699,12 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
         setWriteVersion(store.getCurrentVersion());
     }
 
+    /**
+     * 创建空root Page或读取root Page
+     *
+     * @param rootPos
+     * @return
+     */
     private Page readOrCreateRootPage(long rootPos) {
         Page root = rootPos == 0 ? createEmptyLeaf() : readPage(rootPos);
         return root;

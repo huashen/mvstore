@@ -547,6 +547,7 @@ public class MVStore implements AutoCloseable {
             meta.put(MVMap.getMapKey(id), map.asString(name));
             meta.put(DataUtils.META_NAME + name, x);
             long lastStoredVersion = currentVersion - 1;
+            //设置根page
             map.setRootPos(0, lastStoredVersion);
             markMetaChanged();
             @SuppressWarnings("unchecked")
