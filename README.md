@@ -5,7 +5,7 @@
 - common 公共
 - exception 异常
 - mvstore 引擎核心
-- mvstore 工具类
+- util 工具类
 
 参考项目：https://github.com/TLthirtyeight/persistencebtree
 
