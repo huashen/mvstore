@@ -150,17 +150,20 @@ public final class RootReference {
      * @return the new, locked, root reference, or null if not successful
      */
     RootReference tryLock(int attemptCounter) {
+        //首先判断是否可以加锁，如果可以加锁则尝试加锁，如果不可以加锁则直接返回null
         return canUpdate() ? tryUpdate(new RootReference(this, attemptCounter)) : null;
     }
 
     /**
      * Try to unlock, and if successful update the version
+     * 解锁
      *
      * @param version the version
      * @param attempt the number of attempts so far
      * @return the new, unlocked and updated, root reference, or null if not successful
      */
     RootReference tryUnlockAndUpdateVersion(long version, int attempt) {
+        //重新创建一个RootReference对象，然后借助于CAS将新的RootReference对象更新到root属性中
         return canUpdate() ? tryUpdate(new RootReference(this, version, attempt)) : null;
     }
 
@@ -206,6 +209,11 @@ public final class RootReference {
     }
 
 
+    /**
+     *  canUpdate()首先判断当前是否有其他线程已经对本RootReference对象加锁了，如果有，
+     *  则再检查已经加锁的线程id与当前线程id是否一致，如果一致则表示是当前线程加的锁
+     * @return
+     */
     private boolean canUpdate() {
         return isFree() || ownerId == Thread.currentThread().getId();
     }
@@ -216,6 +224,7 @@ public final class RootReference {
 
     private RootReference tryUpdate(RootReference updatedRootReference) {
         assert canUpdate();
+        //使用java的CAS尝试更新root属性的RootReference对象，如果更新成功，则表示当前线程加了锁。
         return root.map.compareAndSetRoot(this, updatedRootReference) ? updatedRootReference : null;
     }
 

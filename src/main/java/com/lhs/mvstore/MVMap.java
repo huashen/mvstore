@@ -1906,17 +1906,21 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
     }
 
     private RootReference lockRoot(RootReference rootReference, int attempt) {
+        //不断尝试加锁，直到加锁成功为止
         while (true) {
+            //尝试加锁，如果加锁成功会返回一个不为null的对象，否则返回null
             RootReference lockedRootReference = tryLock(rootReference, attempt++);
             if (lockedRootReference != null) {
                 return lockedRootReference;
             }
+            //有可能其他线程在加锁中间会更新根页面，所以每次加锁失败重新获取新的RootReference对象
             rootReference = getRoot();
         }
     }
 
     /**
      * Try to lock the root.
+     * 尝试对根页面加锁
      *
      * @param rootReference the old root reference
      * @param attempt       the number of attempts so far
@@ -1925,6 +1929,7 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
     protected RootReference tryLock(RootReference rootReference, int attempt) {
         RootReference lockedRootReference = rootReference.tryLock(attempt);
         if (lockedRootReference != null) {
+            //加锁成功，则将最新的RootReference对象返回
             return lockedRootReference;
         }
         assert !rootReference.isLockedByCurrentThread() : rootReference;
@@ -1940,6 +1945,10 @@ public class MVMap extends AbstractMap<String, String> implements ConcurrentMap<
             contention += (int) ((updateAttemptCounter + 1) / (updateCounter + 1));
         }
 
+        /**
+         * 当满足一定的条件后，将线程休眠或者使线程等待
+         * 防止线程不断的尝试加锁，给系统造成负担
+         */
         if (attempt > 4) {
             if (attempt <= 12) {
                 Thread.yield();

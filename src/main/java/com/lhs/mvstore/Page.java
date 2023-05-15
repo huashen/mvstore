@@ -35,6 +35,7 @@ public abstract class Page implements Cloneable {
 
     /**
      * Map this page belongs to
+     * 该页面所属的MVMap对象，可以理解为该页面所属的B+树
      */
     public final MVMap map;
 
@@ -76,6 +77,7 @@ public abstract class Page implements Cloneable {
 
     /**
      * The keys.
+     * 用于保存该页面的key
      */
     private String[] keys;
 
